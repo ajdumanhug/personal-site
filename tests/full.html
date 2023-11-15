@@ -11,153 +11,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     <!-- THIS SCRIPT NEEDS TO BE LOADED FIRST BEFORE wforms.js -->
     <script type="text/javascript" data-for="FA__DOMContentLoadedEventDispatch" src="https://www.tfaforms.com/js/FA__DOMContentLoadedEventDispatcher.js" defer></script>
-                        <style>
-                    .captcha {
-                        padding-bottom: 1em !important;
-                    }
-                    .wForm .captcha .oneField {
-                        margin: 0;
-                        padding: 0;
-                    }
-                </style>
-                <script type="text/javascript">
-                    // initialize our variables
-                    var captchaReady = 0;
-                    var wFORMSReady = 0;
-                    var isConditionalSubmitEnabled = false;
-
-                    // when wForms is loaded call this
-                    var wformsReadyCallback = function () {
-                        // using this var to denote if wForms is loaded
-                        wFORMSReady = 1;
-                        isConditionalSubmitEnabled = document.getElementById('submit_button').hasAttribute('data-condition');
-                        // call our recaptcha function which is dependent on both
-                        // wForms and an async call to google
-                        // note the meat of this function wont fire until both
-                        // wFORMSReady = 1 and captchaReady = 1
-                        onloadCallback();
-                    }
-                    var gCaptchaReadyCallback = function() {
-                        // using this var to denote if captcha is loaded
-                        captchaReady = 1;
-                        isConditionalSubmitEnabled = document.getElementById('submit_button').hasAttribute('data-condition');
-                        // call our recaptcha function which is dependent on both
-                        // wForms and an async call to google
-                        // note the meat of this function wont fire until both
-                        // wFORMSReady = 1 and captchaReady = 1
-                        onloadCallback();
-                    };
-
-                    // add event listener to fire when wForms is fully loaded
-                    document.addEventListener("wFORMSLoaded", wformsReadyCallback);
-
-                    var enableSubmitButton = function() {
-                        var submitButton = document.getElementById('submit_button');
-                        var explanation = document.getElementById('disabled-explanation');
-                        var isConditionalSubmitConditionMet = wFORMS.behaviors.condition.isConditionalSubmitConditionMet;
-                        if (
-                            submitButton != null &&
-                            (isConditionalSubmitEnabled && isConditionalSubmitConditionMet) ||
-                            !isConditionalSubmitEnabled
-                        )
-                        {
-                            submitButton.removeAttribute('disabled');
-                            if (explanation != null) {
-                                explanation.style.display = 'none';
-                            }
-                        }
-                    };
-                    var disableSubmitButton = function() {
-                        var submitButton = document.getElementById('submit_button');
-                        var explanation = document.getElementById('disabled-explanation');
-                        if (submitButton != null) {
-                            submitButton.disabled = true;
-                            if (explanation != null) {
-                                explanation.style.display = 'block';
-                            }
-                        }
-                    };
-
-                    // call this on both captcha async complete and wforms fully
-                    // initialized since we can't be sure which will complete first
-                    // and we need both done for this to function just check that they are
-                    // done to fire the functionality
-                    var onloadCallback = function () {
-                        // if our captcha is ready (async call completed)
-                        // and wFORMS is completely loaded then we are ready to add
-                        // the captcha to the page
-                        if (captchaReady && wFORMSReady) {
-                                grecaptcha.enterprise.render('g-recaptcha-render-div', {
-                                'sitekey': '6LfMg_EaAAAAAMhDNLMlgqDChzmtYHlx1yU2y7GI',
-                                'theme': 'light',
-                                'size': 'normal',
-                                'callback': 'enableSubmitButton',
-                                'expired-callback': 'disableSubmitButton'
-                            })
-                            var oldRecaptchaCheck = parseInt('1');
-                            if (oldRecaptchaCheck === -1) {
-                                var standardCaptcha = document.getElementById("tfa_captcha_text");
-                                standardCaptcha = standardCaptcha.parentNode.parentNode.parentNode;
-                                standardCaptcha.parentNode.removeChild(standardCaptcha);
-                            }
-
-                            if (!wFORMS.instances['paging']) {
-                                document.getElementById("g-recaptcha-render-div").parentNode.parentNode.parentNode.style.display = "block";
-                                //document.getElementById("g-recaptcha-render-div").parentNode.parentNode.parentNode.removeAttribute("hidden");
-                            }
-                            document.getElementById("g-recaptcha-render-div").getAttributeNode('id').value = 'tfa_captcha_text';
-
-                            var captchaError = '';
-                            if (captchaError == '1') {
-                                var errMsgText = 'The CAPTCHA was not completed successfully.';
-                                var errMsgDiv = document.createElement('div');
-                                errMsgDiv.id = "tfa_captcha_text-E";
-                                errMsgDiv.className = "err errMsg";
-                                errMsgDiv.innerText = errMsgText;
-                                var loc = document.querySelector('.g-captcha-error');
-                                loc.insertBefore(errMsgDiv, loc.childNodes[0]);
-
-                                /* See wFORMS.behaviors.paging.applyTo for origin of this code */
-                                if (wFORMS.instances['paging']) {
-                                    var b = wFORMS.instances['paging'][0];
-                                    var pp = base2.DOM.Element.querySelector(document, wFORMS.behaviors.paging.CAPTCHA_ERROR);
-                                    if (pp) {
-                                        var lastPage = 1;
-                                        for (var i = 1; i < 100; i++) {
-                                            if (b.behavior.isLastPageIndex(i)) {
-                                                lastPage = i;
-                                                break;
-                                            }
-                                        }
-                                        b.jumpTo(lastPage);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                </script>
-                                    <script src='https://www.google.com/recaptcha/enterprise.js?onload=gCaptchaReadyCallback&render=explicit&hl=en_US' async
-                        defer></script>
-                <script type="text/javascript">
-                    document.addEventListener("DOMContentLoaded", function() {
-                        var warning = document.getElementById("javascript-warning");
-                        if (warning != null) {
-                            warning.parentNode.removeChild(warning);
-                        }
-                        var oldRecaptchaCheck = parseInt('1');
-                        if (oldRecaptchaCheck !== -1) {
-                            var explanation = document.getElementById('disabled-explanation');
-                            var submitButton = document.getElementById('submit_button');
-                            if (submitButton != null) {
-                                submitButton.disabled = true;
-                                if (explanation != null) {
-                                    explanation.style.display = 'block';
-                                }
-                            }
-                        }
-                    });
-                </script>
-                <script type="text/javascript">
+            <script type="text/javascript">
         document.addEventListener("FA__DOMContentLoaded", function(){
             const FORM_TIME_START = Math.floor((new Date).getTime()/1000);
             let formElement = document.getElementById("tfa_0");
@@ -193,15 +47,15 @@
         });
     </script>
 
-    <link href="https://www.tfaforms.com/dist/form-builder/5.0.0/wforms-layout.css?v=1700062501" rel="stylesheet" type="text/css" />
+    <link href="https://www.tfaforms.com/dist/form-builder/5.0.0/wforms-layout.css?v=1700062711" rel="stylesheet" type="text/css" />
 
     <link href="https://www.tfaforms.com/uploads/themes/theme-68007.css" rel="stylesheet" type="text/css" />
-    <link href="https://www.tfaforms.com/dist/form-builder/5.0.0/wforms-jsonly.css?v=1700062501" rel="alternate stylesheet" title="This stylesheet activated by javascript" type="text/css" />
-    <script type="text/javascript" src="https://www.tfaforms.com/wForms/3.11/js/wforms.js?v=1700062501"></script>
+    <link href="https://www.tfaforms.com/dist/form-builder/5.0.0/wforms-jsonly.css?v=1700062711" rel="alternate stylesheet" title="This stylesheet activated by javascript" type="text/css" />
+    <script type="text/javascript" src="https://www.tfaforms.com/wForms/3.11/js/wforms.js?v=1700062711"></script>
     <script type="text/javascript">
         wFORMS.behaviors.prefill.skip = false;
     </script>
-        <script type="text/javascript" src="https://www.tfaforms.com/wForms/3.11/js/localization-en_US.js?v=1700062501"></script>
+        <script type="text/javascript" src="https://www.tfaforms.com/wForms/3.11/js/localization-en_US.js?v=1700062711"></script>
 
             
     
@@ -236,21 +90,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <option value="tfa_5" id="tfa_5" class="">Female</option>
 <option value="tfa_6" id="tfa_6" class="">Others</option></select></div>
 </div>
-<div class="actions" id="0-A" data-contentid="submit_button">
-<div id="google-captcha" style="display: none">
-<br><div class="captcha">
-<div class="oneField">
-<div class="g-recaptcha" id="g-recaptcha-render-div"></div>
-<div class="g-captcha-error"></div>
-<br>
-</div>
-<div class="captchaHelp">reCAPTCHA helps prevent automated form spam.<br>
-</div>
-<div id="disabled-explanation" class="captchaHelp" style="display: none">The submit button will be disabled until you complete the CAPTCHA.</div>
-</div>
-</div>
-<input type="submit" data-label="Submit" class="primaryAction" id="submit_button" value="Submit">
-</div>
+<div class="actions" id="0-A" data-contentid="submit_button"><input type="submit" data-label="Submit" class="primaryAction" id="submit_button" value="Submit"></div>
 <div style="clear:both"></div>
 <input type="hidden" value="5097871" name="tfa_dbFormId" id="tfa_dbFormId"><input type="hidden" value="" name="tfa_dbResponseId" id="tfa_dbResponseId"><input type="hidden" value="f9ba1916fde4af546ac9d242dbb97181" name="tfa_dbControl" id="tfa_dbControl"><input type="hidden" value="" name="tfa_dbWorkflowSessionUuid" id="tfa_dbWorkflowSessionUuid"><input type="hidden" value="1" name="tfa_dbVersionId" id="tfa_dbVersionId"><input type="hidden" value="" name="tfa_switchedoff" id="tfa_switchedoff">
 </form>
